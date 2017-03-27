@@ -17,7 +17,7 @@ public class FriendConnection extends AbstractDBManager{
 
 	public JSONArray getFriends(final String email) {
 		final JSONArray arrayFriends = new JSONArray();
-		final String query = "select * from hobbiesDB.friend where User_email = ?;";
+		final String query = "select * from yellit.friend where User_email = ?;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection

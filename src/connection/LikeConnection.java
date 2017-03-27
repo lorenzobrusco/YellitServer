@@ -24,7 +24,7 @@ public class LikeConnection extends AbstractDBManager {
 	public JSONArray getTips(final String mail) {
 		final JSONArray tips = new JSONArray();
 		final StringArray likes = new StringArray();
-		final String query1 = "select post.type from hobbiesDB.post join hobbiesDB.like where like.user_email = ? and post.idPost = like.Post_idPost;";
+		final String query1 = "select post.type from post join like where like.user_email = ? and post.idPost = like.Post_idPost;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query1);
@@ -61,7 +61,7 @@ public class LikeConnection extends AbstractDBManager {
 				}
 			}
 			
-			final String query = "select * from hobbiesDB.post join hobbiesDB.like where type = ? and post.idPost NOT IN (select idPost from hobbiesDB.post join hobbiesDB.like where user_email = ? and post.idPost = Post_idPost); ";
+			final String query = "select * from post join like where type = ? and post.idPost NOT IN (select idPost from post join like where user_email = ? and post.idPost = Post_idPost); ";
 			try {
 				final Connection mConnection = createConnection();
 				final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);

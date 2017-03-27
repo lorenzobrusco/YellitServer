@@ -17,7 +17,7 @@ public class UserConnection extends AbstractDBManager {
 
 	public JSONObject loginUser(final String email, final String password) {
 		final JSONObject user = new JSONObject();
-		final String query = "select * from hobbiesDB.user where email = ? and password = ?;";
+		final String query = "select * from yellit.user where email = ? and password = ?;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
@@ -46,7 +46,7 @@ public class UserConnection extends AbstractDBManager {
 		if (this.checkIfUserExist(email)) {
 			return createProfile;
 		} else {
-			final String query = "INSERT INTO `hobbiesdb`.`user` (`email`, `name`, `surname`, `password`) VALUES (?, ?, ?, ?);";
+			final String query = "INSERT INTO `yellit`.`user` (`email`, `name`, `surname`, `password`) VALUES (?, ?, ?, ?);";
 			try {
 				final Connection mConnection = createConnection();
 				final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
@@ -67,7 +67,7 @@ public class UserConnection extends AbstractDBManager {
 	}
 
 	private boolean checkIfUserExist(final String user) {
-		final String query = "select * from hobbiesDB.user where email = ?;";
+		final String query = "select * from yellit.user where email = ?;";
 		boolean exist = false;
 		try {
 			final Connection mConnection = createConnection();

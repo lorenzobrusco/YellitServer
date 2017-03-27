@@ -16,7 +16,7 @@ public class PostConnection extends AbstractDBManager {
 
 	public JSONArray getAllPost(final String data) {
 		final JSONArray posts = new JSONArray();
-		final String query = "select * from hobbiesDB.post where date = ?;";
+		final String query = "select * from post where date = ?;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
@@ -48,7 +48,7 @@ public class PostConnection extends AbstractDBManager {
 	public JSONObject createPost(final String title, final String subtitle, final String type, final String date,
 			final String location, final String text) {
 		final JSONObject createPost = new JSONObject();
-		final String query = "INSERT INTO `hobbiesdb`.`post` (`data`, `title`, `subtitle`, `type`, `text`, `location`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+		final String query = "INSERT INTO `yellit`.`post` (`data`, `title`, `subtitle`, `type`, `text`, `location`) VALUES (?, ?, ?, ?, ?, ?, ?);";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
@@ -71,7 +71,7 @@ public class PostConnection extends AbstractDBManager {
 
 	public JSONObject deletePost(final int id) {
 		final JSONObject deletePost = new JSONObject();
-		final String query = "delete from hobbiesDB.post where idPost = ?;";
+		final String query = "delete from yellit.post where idPost = ?;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
