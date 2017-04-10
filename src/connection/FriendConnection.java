@@ -17,7 +17,7 @@ public class FriendConnection extends AbstractDBManager{
 
 	public JSONArray getFriends(final String email) {
 		final JSONArray arrayFriends = new JSONArray();
-		final String query = "select * from yellit.friend where User_email = ?;";
+		final String query = "select * from yellit.friends where user_email = ?;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection
@@ -26,7 +26,7 @@ public class FriendConnection extends AbstractDBManager{
 			final ResultSet mResultSet = mPreparedStatement.executeQuery();
 			while (mResultSet.next()) {
 				final JSONObject friend = new JSONObject();
-				friend.put("friend",mResultSet.getString("Friend_email"));
+				friend.put("friend",mResultSet.getString("user_email1"));
 				arrayFriends.put(friend);
 			}
 			closeConnection();

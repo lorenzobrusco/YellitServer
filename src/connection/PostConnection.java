@@ -85,5 +85,30 @@ public class PostConnection extends AbstractDBManager {
 		}
 		return deletePost;
 	}
+	
+	public JSONArray getPersonalPost(final String email) {
+		final JSONArray posts = new JSONArray();
+		final String query = "select count(*), type from post where user_email = ? group by type ;";
+		try {
+			final Connection mConnection = createConnection();
+			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
+			mPreparedStatement.setString(1, email);
+
+			final ResultSet mResultSet = mPreparedStatement.executeQuery();
+			while (mResultSet.next()) {
+				final JSONObject post = new JSONObject();
+				post.put("", mResultSet.getString("count(*)"));
+				post.put("", mResultSet.getString("type"));	
+				
+				posts.put(post);
+			}
+			closeConnection();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return posts;
+	}
 
 }

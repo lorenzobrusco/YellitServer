@@ -26,8 +26,8 @@ public class UserConnection extends AbstractDBManager {
 			final ResultSet mResultSet = mPreparedStatement.executeQuery();
 			while (mResultSet.next()) {
 				user.put("email", mResultSet.getString("email"));
-				user.put("name", mResultSet.getString("name"));
-				user.put("surname", mResultSet.getString("surname"));
+				user.put("nickname", mResultSet.getString("nickname"));
+				user.put("fullname", mResultSet.getString("fullname"));
 			}
 			closeConnection();
 			JSONArray friends = new FriendConnection().getFriends(email);
