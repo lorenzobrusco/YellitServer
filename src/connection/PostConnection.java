@@ -16,24 +16,30 @@ public class PostConnection extends AbstractDBManager {
 
 	public JSONArray getAllPost(final String data) {
 		final JSONArray posts = new JSONArray();
-		final String query = "select * from post where date = ?;";
+		//final String query = "select * from post where date = ?;";
+		final String query = "select * from post;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
-			mPreparedStatement.setString(1, data);
-
+			
+			// mPreparedStatement.setString(1, data);
+			// new UserConnection().getProfileImage(mResultSet.getString("user"))
+			
 			final ResultSet mResultSet = mPreparedStatement.executeQuery();
 			while (mResultSet.next()) {
+				/*
+				 * Manca da prendere il parametro TEXT, mo intanto vediamo se funziona
+				 */
 				final JSONObject post = new JSONObject();
 				post.put("id_post", mResultSet.getString("idPost"));
-				post.put("user_nick", mResultSet.getString("user"));
-				post.put("user_image", new UserConnection().getProfileImage(mResultSet.getString("user")));
+				post.put("user_nick", mResultSet.getString("user_email"));
+				post.put("user_image", "null");
 				post.put("type", mResultSet.getString("type"));
 				post.put("date", mResultSet.getString("date"));
-				post.put("location", mResultSet.getString("location"));
+				post.put("position", mResultSet.getString("position"));
 				post.put("post_image", mResultSet.getString("image"));
-				post.put("post_video", mResultSet.getString("video"));
-				post.put("likes", mResultSet.getString("likes"));		
+				post.put("post_video", "null");
+				post.put("likes", "null");		
 				posts.put(post);
 			}
 			closeConnection();
@@ -47,6 +53,7 @@ public class PostConnection extends AbstractDBManager {
 
 	public JSONObject createPost(final String title, final String subtitle, final String type, final String date,
 			final String location, final String text) {
+		
 		final JSONObject createPost = new JSONObject();
 		final String query = "INSERT INTO `yellit`.`post` (`data`, `title`, `subtitle`, `type`, `text`, `location`) VALUES (?, ?, ?, ?, ?, ?, ?);";
 		try {

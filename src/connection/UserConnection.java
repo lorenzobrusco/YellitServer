@@ -106,4 +106,26 @@ public class UserConnection extends AbstractDBManager {
 		return null;
 	}
 
+	public String getUserFromEmail(final String email) {
+		if (checkIfUserExist(email)) {
+			String image = null;
+			final String query = "select nickname from user where email = ?;";
+			try {
+				final Connection mConnection = createConnection();
+				final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
+				mPreparedStatement.setString(1, email);
+				final ResultSet mResultSet = mPreparedStatement.executeQuery();
+				while (mResultSet.next()) {
+					image = mResultSet.getString("nickname");
+				}
+				closeConnection();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return image;
+		}
+		return null;
+	}
+	
 }
