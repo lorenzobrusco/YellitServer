@@ -40,28 +40,25 @@ public class UserConnection extends AbstractDBManager {
 		return user;
 	}
 
-	public JSONObject createProfile(final String email, final String name, final String surname,
-			final String password) {
-		final JSONObject createProfile = new JSONObject();
+	public JSONObject createProfile(final String email, final String nickname, final String password) {
+		JSONObject createProfile = new JSONObject();
 		if (this.checkIfUserExist(email)) {
+			System.out.println();
 			return createProfile;
 		} else {
-			final String query = "INSERT INTO `yellit`.`user` (`email`, `name`, `surname`, `password`) VALUES (?, ?, ?, ?);";
+			final String query = "INSERT INTO yellit.user (`email`, `nickname`, `password`) VALUES (?, ?, ?);";
 			try {
 				final Connection mConnection = createConnection();
 				final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
 				mPreparedStatement.setString(1, email);
-				mPreparedStatement.setString(2, name);
-				mPreparedStatement.setString(3, surname);
-				mPreparedStatement.setString(4, password);
+				mPreparedStatement.setString(2, nickname);
+				mPreparedStatement.setString(3, password);
 				mPreparedStatement.execute();
-				createProfile.put("profile", "profile created correctly");
+				createProfile = loginUser(email, password);
 				closeConnection();
 			} catch (SQLException e) {
 				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			} 
 		}
 		return createProfile;
 	}
