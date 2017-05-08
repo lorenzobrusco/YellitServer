@@ -51,29 +51,32 @@ public class PostConnection extends AbstractDBManager {
 		return posts;
 	}
 
-	public JSONObject createPost(final String title, final String subtitle, final String type, final String date,
-			final String location, final String text) {
+	public boolean createPost(final String type, final String position, final String image, final String userEmail, final String text) {
 		
-		final JSONObject createPost = new JSONObject();
-		final String query = "INSERT INTO `yellit`.`post` (`data`, `title`, `subtitle`, `type`, `text`, `location`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+		//final String query = "INSERT INTO `yellit`.`post` (`data`, `title`, `subtitle`, `type`, `text`, `location`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+		
+		final String query = "INSERT INTO post (post.type, post.position, post.image, post.user_email, post.text) VALUES (?, ?, ?, ?, ?);";
 		try {
+			
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
-			mPreparedStatement.setString(1, date);
-			mPreparedStatement.setString(2, title);
-			mPreparedStatement.setString(3, subtitle);
-			mPreparedStatement.setString(4, type);
+			mPreparedStatement.setString(1, type);
+			mPreparedStatement.setString(2, position);
+			mPreparedStatement.setString(3, image);
+			mPreparedStatement.setString(4, userEmail);
 			mPreparedStatement.setString(5, text);
-			mPreparedStatement.setString(6, location);
 			mPreparedStatement.execute();
-			createPost.put("post", "post created correctly");
+			
 			closeConnection();
+			
+			return true;
+			
 		} catch (SQLException e) {
+			
 			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return createPost;
+			return false;
+			
+		} 		
 	}
 
 	public JSONObject deletePost(final int id) {
