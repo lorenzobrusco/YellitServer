@@ -28,7 +28,6 @@ public class PostConnection extends AbstractDBManager {
 			while (mResultSet.next()) {
 
 				final JSONObject post = new JSONObject();
-
 				post.put("id_post", mResultSet.getString("idPost"));
 				post.put("user_nick", mResultSet.getString("user_email"));
 				post.put("type", mResultSet.getString("type"));
@@ -40,7 +39,6 @@ public class PostConnection extends AbstractDBManager {
 				post.put("likes", "null");		
 
 				postsList.put(post);
-
 			}
 
 			for(int i = 0; i < postsList.length(); i++)
@@ -60,6 +58,16 @@ public class PostConnection extends AbstractDBManager {
 				}
 			}
 			
+			for(int i = 0; i < postsList.length(); i++)
+			{
+				JSONObject ppp = (JSONObject) postsList.get(i);				
+				String idPostString = (String) ppp.get("idPost");
+				int idPost = Integer.parseInt(idPostString);
+				
+				final int likes = new LikeConnection().getLikesPost(idPost);
+				ppp.put("likes", likes+"");
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -73,9 +81,12 @@ public class PostConnection extends AbstractDBManager {
 		return postsList;
 	}
 
-	public boolean createPost(final String type, final String position, final String image, final String userEmail, final String text) {
+	public boolean createPost(final String type, final String position, final String image, final String userEmail,
+			final String text) {
 
-		//final String query = "INSERT INTO `yellit`.`post` (`data`, `title`, `subtitle`, `type`, `text`, `location`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+		// final String query = "INSERT INTO `yellit`.`post` (`data`, `title`,
+		// `subtitle`, `type`, `text`, `location`) VALUES (?, ?, ?, ?, ?, ?,
+		// ?);";
 
 		final String query = "INSERT INTO post (post.type, post.position, post.image, post.user_email, post.text) VALUES (?, ?, ?, ?, ?);";
 		try {
@@ -97,7 +108,6 @@ public class PostConnection extends AbstractDBManager {
 
 			e.printStackTrace();
 			return false;
-
 		} 		
 	}
 

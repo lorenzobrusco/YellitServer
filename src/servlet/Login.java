@@ -36,7 +36,7 @@ public class Login extends HttpServlet {
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		System.out.println(email + password);
-		JSONObject profile = new UserConnection().loginUser("aaa", "aaa");
+		JSONObject profile = new UserConnection().loginUser(email, password);
 		if (profile == null) {
 			response.getWriter().append("");
 		} else {
