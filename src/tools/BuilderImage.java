@@ -10,8 +10,8 @@ public class BuilderImage {
 
 	/**
 	 * 
-	 * @param bytes
-	 * @return
+	 * @param bytes encoding of image
+	 * @return image
 	 * @throws IOException
 	 */
 	public static BufferedImage  Build(byte[] bytes) throws IOException {
