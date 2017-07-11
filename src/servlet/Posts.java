@@ -42,16 +42,13 @@ public class Posts extends HttpServlet {
 	 */
 	public Posts() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
-
+		
 		String mode = request.getParameter("mode");
 
 		if(mode != null)
@@ -78,21 +75,21 @@ public class Posts extends HttpServlet {
 		}
 		else
 		{
-			try {
+			final JSONObject serviceManager = new JSONObject();
 
-				final JSONObject serviceManager = new JSONObject();
-				
+			try {				
 				String comment = request.getParameter("comment");
 				String place = request.getParameter("place");
 				String category = request.getParameter("category");
 				String email = request.getParameter("email");
-							
+				String lat = request.getParameter("lat");
+				String longi = request.getParameter("longi");
+				
 				Part filePart = request.getPart("file");
 				String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 				InputStream fileContent = filePart.getInputStream();
 
-				System.out.println(comment + " " + place + " " + category + " " + email + " fln " + fileName);
-
+				//			System.out.println(comment + " " + place + " " + category + " " + email + " fln " + fileName);
 				//			Image image = ImageIO.read(fileContent);
 				//
 				//			JFrame frame = new JFrame();
@@ -101,12 +98,18 @@ public class Posts extends HttpServlet {
 				//		    frame.pack();
 				//		    frame.setVisible(true);
 
+				serviceManager.put("message","Sto per creare");
+				
 				BufferedImage bi = ImageIO.read(fileContent);
-				String filePath = "C:/Users/Altair07/git/YellitServer/WebContent/Images/" + fileName;
+				//	String filePath = "C:/Users/Altair07/git/YellitServer/WebContent/Images/" + fileName;
+				//	String filePath = "/home/yellit/" + fileName;
+				String filePath = "/var/lib/tomcat8/webapps/YellitServer/Images/" + fileName;
+				String databasePath = "http://159.203.128.152:8080/YellitServer/Images/" + fileName;
+				
 				File outputfile = new File(filePath);
 				ImageIO.write(bi, "png", outputfile);
 
-				boolean messageCreated = new PostConnection().createPost(category, place, filePath, email, comment);
+				boolean messageCreated = new PostConnection().createPost(category, place, databasePath, email, comment, lat, longi);
 				
 				serviceManager.put("success", messageCreated);
 				if(messageCreated)
@@ -118,12 +121,18 @@ public class Posts extends HttpServlet {
 					serviceManager.put("message","creazione FALLITA");
 				}
 
+			} catch (IOException e) {
+	
+				e.printStackTrace();
+				
+			} catch (JSONException e) {
+
+				e.printStackTrace();
+				
+			} finally {
+				
 				response.getWriter().append(serviceManager.toString());
 
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
 			}
 
 		}

@@ -61,10 +61,10 @@ public class PostConnection extends AbstractDBManager {
 			for(int i = 0; i < postsList.length(); i++)
 			{
 				JSONObject ppp = (JSONObject) postsList.get(i);				
-				String idPostString = (String) ppp.get("idPost");
+				String idPostString = (String) ppp.getString("id_post");
 				int idPost = Integer.parseInt(idPostString);
 				
-				final int likes = new LikeConnection().getLikesPost(idPost);
+				final int likes = new LikeConnection().getLikesPost(idPost, mConnection);
 				ppp.put("likes", likes+"");
 			}
 			
@@ -81,14 +81,13 @@ public class PostConnection extends AbstractDBManager {
 		return postsList;
 	}
 
+	// final String query = "INSERT INTO `yellit`.`post` (`data`, `title`,
+	// `subtitle`, `type`, `text`, `location`) VALUES (?, ?, ?, ?, ?, ?,
+	// ?);";
 	public boolean createPost(final String type, final String position, final String image, final String userEmail,
-			final String text) {
+			final String text, final String lat, final String longi) {
 
-		// final String query = "INSERT INTO `yellit`.`post` (`data`, `title`,
-		// `subtitle`, `type`, `text`, `location`) VALUES (?, ?, ?, ?, ?, ?,
-		// ?);";
-
-		final String query = "INSERT INTO post (post.type, post.position, post.image, post.user_email, post.text) VALUES (?, ?, ?, ?, ?);";
+		final String query = "INSERT INTO post (post.type, post.position, post.image, post.user_email, post.text, post.lat, post.longi) VALUES (?, ?, ?, ?, ?, ?, ?);";
 		try {
 
 			final Connection mConnection = createConnection();
@@ -98,6 +97,8 @@ public class PostConnection extends AbstractDBManager {
 			mPreparedStatement.setString(3, image);
 			mPreparedStatement.setString(4, userEmail);
 			mPreparedStatement.setString(5, text);
+			mPreparedStatement.setString(6, lat);
+			mPreparedStatement.setString(7, longi);
 			mPreparedStatement.execute();
 
 			closeConnection();

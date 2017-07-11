@@ -26,7 +26,7 @@ public class LikeConnection extends AbstractDBManager {
 			mPreparedStatement.setString(1, email);
 			mPreparedStatement.setInt(2, idPost);
 			mPreparedStatement.execute();
-			int updated = getLikesPost(idPost);
+			int updated = getLikesPost(idPost, mConnection);
 			updatedLikes.put("likes", updated);
 			closeConnection();
 			}
@@ -48,7 +48,7 @@ public class LikeConnection extends AbstractDBManager {
 			mPreparedStatement.setString(1, email);
 			mPreparedStatement.setInt(2, idPost);
 			mPreparedStatement.execute();
-			int updated = getLikesPost(idPost);
+			int updated = getLikesPost(idPost, mConnection);
 			updatedLikes.put("likes", updated);
 			closeConnection();
 			}
@@ -62,20 +62,20 @@ public class LikeConnection extends AbstractDBManager {
 	}
 	
 	
-	public int getLikesPost(final int idPost) {
+	public int getLikesPost(final int idPost, Connection mConnection) {
 		
-		final String query = "select count(*) as total from like where post_idpost = ?; ";
+		final String query = "select count(*) as total from yellit.like where post_idpost = ?; ";
 		int result = 0;
 		try {
-			final Connection mConnection = createConnection();
+
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
 			mPreparedStatement.setInt(1, idPost);
 			final ResultSet mResultSet = mPreparedStatement.executeQuery();
-			result = mResultSet.getInt("total");
-			/**
-			 * return number of likes
-			 */
-			closeConnection();
+			while (mResultSet.next()) {
+				
+				result = mResultSet.getInt("total");
+			}
+
 		} catch (SQLException e) {
 		e.printStackTrace();
 		}
