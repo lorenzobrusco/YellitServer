@@ -1,11 +1,18 @@
 package servlet;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.json.JSONObject;
 
@@ -33,7 +40,16 @@ public class Signin extends HttpServlet {
 		String nickname = request.getParameter("nickname");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		System.out.println(email + password);
+		/**
+		 * create image and add here
+		 */
+		Part filePart = request.getPart("file");
+		String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+		InputStream fileContent = filePart.getInputStream();
+		BufferedImage bi = ImageIO.read(fileContent);
+		String filePath = "/var/lib/tomcat8/webapps/YellitServer/Images/" + fileName;
+		File outputfile = new File(filePath);
+		ImageIO.write(bi, "png", outputfile);
 		JSONObject profile = new UserConnection().createProfile(email, nickname, password);
 		if (profile == null) {
 			response.getWriter().append("");
