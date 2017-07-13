@@ -28,12 +28,31 @@ public class UserConnection extends AbstractDBManager {
 				user.put("email", mResultSet.getString("email"));
 				user.put("nickname", mResultSet.getString("nickname"));
 				user.put("fullname", mResultSet.getString("fullname"));
-				user.put("sesso", mResultSet.getString("sesso"));
-				user.put("altezza", mResultSet.getString("altezza"));
-				user.put("peso", mResultSet.getString("peso"));
-				user.put("città", mResultSet.getString("città"));
-				user.put("birthday", mResultSet.getString("birthday"));
-				user.put("relazione", mResultSet.getString("relazione"));
+				user.put("userimage", mResultSet.getString("userimage"));
+			}
+			closeConnection();
+			JSONArray friends = new FriendConnection().getFriends(email);
+			user.put("friends", friends);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
+	
+	public JSONObject loginUser(final String email) {
+		final JSONObject user = new JSONObject();
+		final String query = "select * from yellit.user where email = ?;";
+		try {
+			final Connection mConnection = createConnection();
+			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
+			final ResultSet mResultSet = mPreparedStatement.executeQuery();
+			while (mResultSet.next()) {
+				user.put("email", mResultSet.getString("email"));
+				user.put("nickname", mResultSet.getString("nickname"));
+				user.put("fullname", mResultSet.getString("fullname"));
+				user.put("userimage", mResultSet.getString("userimage"));
 			}
 			closeConnection();
 			JSONArray friends = new FriendConnection().getFriends(email);
@@ -66,12 +85,7 @@ public class UserConnection extends AbstractDBManager {
 				user.put("email", mResultSet.getString("email"));
 				user.put("nickname", mResultSet.getString("nickname"));
 				user.put("fullname", mResultSet.getString("fullname"));
-				user.put("sesso", mResultSet.getString("sesso"));
-				user.put("altezza", mResultSet.getString("altezza"));
-				user.put("peso", mResultSet.getString("peso"));
-				user.put("città", mResultSet.getString("città"));
-				user.put("birthday", mResultSet.getString("birthday"));
-				user.put("relazione", mResultSet.getString("relazione"));
+				user.put("userimage", mResultSet.getString("userimage"));
 			}
 			closeConnection();
 			JSONArray friends = new FriendConnection().getFriends(email);
@@ -84,19 +98,20 @@ public class UserConnection extends AbstractDBManager {
 		return user;
 	}
 	
-	public JSONObject createProfile(final String email, final String nickname, final String password) {
+	public JSONObject createProfile(final String email, final String nickname, final String password, final String userimage) {
 		JSONObject createProfile = new JSONObject();
 		if (this.checkIfUserExist(email)) {
 			System.out.println();
 			return createProfile;
 		} else {
-			final String query = "INSERT INTO yellit.user (`email`, `nickname`, `password`) VALUES (?, ?, ?);";
+			final String query = "INSERT INTO yellit.user (`email`, `nickname`, `password` `userimage`) VALUES (?, ?, ?);";
 			try {
 				final Connection mConnection = createConnection();
 				final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
 				mPreparedStatement.setString(1, email);
 				mPreparedStatement.setString(2, nickname);
 				mPreparedStatement.setString(3, password);
+				mPreparedStatement.setString(4, userimage);
 				mPreparedStatement.execute();
 				createProfile = loginUser(email, password);
 				closeConnection();
