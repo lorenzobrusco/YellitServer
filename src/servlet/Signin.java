@@ -50,7 +50,7 @@ public class Signin extends HttpServlet {
 		String filePath = "/var/lib/tomcat8/webapps/YellitServer/Images/" + fileName;
 		File outputfile = new File(filePath);
 		ImageIO.write(bi, "png", outputfile);
-		JSONObject profile = new UserConnection().createProfile(email, nickname, password);
+		JSONObject profile = new UserConnection().createProfile(email, nickname, password, fileName);
 		if (profile == null) {
 			response.getWriter().append("");
 		} else {

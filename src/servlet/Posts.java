@@ -89,20 +89,9 @@ public class Posts extends HttpServlet {
 				String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 				InputStream fileContent = filePart.getInputStream();
 
-				//			System.out.println(comment + " " + place + " " + category + " " + email + " fln " + fileName);
-				//			Image image = ImageIO.read(fileContent);
-				//
-				//			JFrame frame = new JFrame();
-				//		    JLabel label = new JLabel(new ImageIcon(image));
-				//		    frame.getContentPane().add(label, BorderLayout.CENTER);
-				//		    frame.pack();
-				//		    frame.setVisible(true);
-
 				serviceManager.put("message","Sto per creare");
 				
 				BufferedImage bi = ImageIO.read(fileContent);
-				//	String filePath = "C:/Users/Altair07/git/YellitServer/WebContent/Images/" + fileName;
-				//	String filePath = "/home/yellit/" + fileName;
 				String filePath = "/var/lib/tomcat8/webapps/YellitServer/Images/" + fileName;
 				String databasePath = "http://159.203.128.152:8080/YellitServer/Images/" + fileName;
 				

@@ -17,14 +17,15 @@ public class LikeConnection extends AbstractDBManager {
 		super();
 	}
 	
-	public JSONObject addLike(final int idPost, String email) {
+	public JSONObject addLike(final int idPost, final String email, final String emailPost) {
 		JSONObject updatedLikes = new JSONObject();
-		final String query = "INSERT INTO yellit.like (`user_email`, `post_idpost`) VALUES (?, ?);";
+		final String query = "INSERT INTO yellit.like (`user_email`, `post_idpost` , `post_user_email`) VALUES (?, ?, ?);";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
 			mPreparedStatement.setString(1, email);
 			mPreparedStatement.setInt(2, idPost);
+			mPreparedStatement.setString(3, emailPost);
 			mPreparedStatement.execute();
 			int updated = getLikesPost(idPost, mConnection);
 			updatedLikes.put("likes", updated);
@@ -39,14 +40,15 @@ public class LikeConnection extends AbstractDBManager {
 		return updatedLikes;
 	}
 	
-	public JSONObject removeLike(final int idPost, String email) {
+	public JSONObject removeLike(final int idPost, final String email, final String emailPost) {
 		JSONObject updatedLikes = new JSONObject();
-		final String query = "DELETE FROM yellit.like WHERE user_email=? and post_idpost = ?;";
+		final String query = "DELETE FROM yellit.like WHERE user_email=? and post_idpost = ? and post_user_email = ?;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
 			mPreparedStatement.setString(1, email);
 			mPreparedStatement.setInt(2, idPost);
+			mPreparedStatement.setString(3, emailPost);
 			mPreparedStatement.execute();
 			int updated = getLikesPost(idPost, mConnection);
 			updatedLikes.put("likes", updated);
