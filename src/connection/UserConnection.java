@@ -9,15 +9,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tools.BaseUrl;
+
 public class UserConnection extends AbstractDBManager {
 
 	public UserConnection() {
 		super();
 	}
 
+	/**
+	 * Login user
+	 * @param email
+	 * @param password
+	 * @return
+	 */
 	public JSONObject loginUser(final String email, final String password) {
 		final JSONObject user = new JSONObject();
-		final String query = "select * from yellit.user where email = ? and password = ?;";
+		final String query = "select * from " + BaseUrl.DB + "user where email = ? and password = ?;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
@@ -28,11 +36,12 @@ public class UserConnection extends AbstractDBManager {
 				user.put("email", mResultSet.getString("email"));
 				user.put("nickname", mResultSet.getString("nickname"));
 				user.put("fullname", mResultSet.getString("fullname"));
+				user.put("password", mResultSet.getString("password"));
 				user.put("userimage", mResultSet.getString("userimage"));
 			}
 			closeConnection();
-			JSONArray friends = new FriendConnection().getFriends(email);
-			user.put("friends", friends);
+//			JSONArray friends = new FriendConnection().getFriends(email);
+//			user.put("friends", friends);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -41,12 +50,18 @@ public class UserConnection extends AbstractDBManager {
 		return user;
 	}
 	
+	/**
+	 * Login when user doesn't contain password, like user's facebook
+	 * @param email
+	 * @return
+	 */
 	public JSONObject loginUser(final String email) {
 		final JSONObject user = new JSONObject();
-		final String query = "select * from yellit.user where email = ?;";
+		final String query = "select * from " + BaseUrl.DB + "user where email = ?;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
+			mPreparedStatement.setString(1, email);
 			final ResultSet mResultSet = mPreparedStatement.executeQuery();
 			while (mResultSet.next()) {
 				user.put("email", mResultSet.getString("email"));
@@ -65,9 +80,22 @@ public class UserConnection extends AbstractDBManager {
 		return user;
 	}
 	
+	/**
+	 * Useless for now
+	 * @param email
+	 * @param nickname
+	 * @param fullname
+	 * @param sesso
+	 * @param altezza
+	 * @param peso
+	 * @param città
+	 * @param birthday
+	 * @param relazione
+	 * @return
+	 */
 	public JSONObject updateInfo(final String email, final String nickname, final String fullname, final String sesso, final String altezza, final String peso, final String città, final String birthday, final String relazione) {
 		final JSONObject user = new JSONObject();
-		final String query = "update yellit.user set nickname=?, fullname=?, sesso=?, altezza=?, peso=?, città=?, birthday=?, relazione=? where email = ?;";
+		final String query = "update " + BaseUrl.DB + "user set nickname=?, fullname=?, sesso=?, altezza=?, peso=?, città=?, birthday=?, relazione=? where email = ?;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
@@ -98,13 +126,21 @@ public class UserConnection extends AbstractDBManager {
 		return user;
 	}
 	
+	/**
+	 * Create a profile 
+	 * @param email
+	 * @param nickname
+	 * @param password
+	 * @param userimage
+	 * @return
+	 */
 	public JSONObject createProfile(final String email, final String nickname, final String password, final String userimage) {
 		JSONObject createProfile = new JSONObject();
 		if (this.checkIfUserExist(email)) {
 			System.out.println();
 			return createProfile;
 		} else {
-			final String query = "INSERT INTO yellit.user (`email`, `nickname`, `password` `userimage`) VALUES (?, ?, ?);";
+			final String query = "INSERT INTO " + BaseUrl.DB + "user (`email`, `nickname`, `password`, `userimage`) VALUES (?, ?, ?, ?);";
 			try {
 				final Connection mConnection = createConnection();
 				final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
@@ -122,8 +158,13 @@ public class UserConnection extends AbstractDBManager {
 		return createProfile;
 	}
 
+	/**
+	 * Check if user exists in database
+	 * @param user
+	 * @return
+	 */
 	private boolean checkIfUserExist(final String user) {
-		final String query = "select * from yellit.user where email = ?;";
+		final String query = "select * from " + BaseUrl.DB + "user where email = ?;";
 		boolean exist = false;
 		try {
 			final Connection mConnection = createConnection();
@@ -140,6 +181,11 @@ public class UserConnection extends AbstractDBManager {
 		return exist;
 	}
 
+	/**
+	 *  Return user's image profile
+	 * @param user
+	 * @return
+	 */
 	public String getProfileImage(final String user) {
 		if (checkIfUserExist(user)) {
 			String image = null;
@@ -151,28 +197,6 @@ public class UserConnection extends AbstractDBManager {
 				final ResultSet mResultSet = mPreparedStatement.executeQuery();
 				while (mResultSet.next()) {
 					image = mResultSet.getString("path_image");
-				}
-				closeConnection();
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			return image;
-		}
-		return null;
-	}
-
-	public String getUserFromEmail(final String email) {
-		if (checkIfUserExist(email)) {
-			String image = null;
-			final String query = "select * from user where email = ?;";
-			try {
-				final Connection mConnection = createConnection();
-				final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
-				mPreparedStatement.setString(1, email);
-				final ResultSet mResultSet = mPreparedStatement.executeQuery();
-				while (mResultSet.next()) {
-					image = mResultSet.getString("nickname");
 				}
 				closeConnection();
 

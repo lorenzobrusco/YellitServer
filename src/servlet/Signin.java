@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import connection.UserConnection;
  * Servlet implementation class Signin
  */
 @WebServlet("/Signin")
+@MultipartConfig
 public class Signin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -40,17 +42,15 @@ public class Signin extends HttpServlet {
 		String nickname = request.getParameter("nickname");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		/**
-		 * create image and add here
-		 */
+		System.out.println(request.getRequestURI().toString() + "&" + nickname + "&" + email + "&"+ password );
+		/** create image and add here*/
 		Part filePart = request.getPart("file");
-		String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 		InputStream fileContent = filePart.getInputStream();
 		BufferedImage bi = ImageIO.read(fileContent);
-		String filePath = "/var/lib/tomcat8/webapps/YellitServer/Images/" + fileName;
+		String filePath = "/var/lib/tomcat8/webapps/YellitServer/Images/" + email +".png";
 		File outputfile = new File(filePath);
 		ImageIO.write(bi, "png", outputfile);
-		JSONObject profile = new UserConnection().createProfile(email, nickname, password, fileName);
+		JSONObject profile = new UserConnection().createProfile(email, nickname, password, "http://159.203.128.152:8080/YellitServer/Images/"+ email +".png");
 		if (profile == null) {
 			response.getWriter().append("");
 		} else {

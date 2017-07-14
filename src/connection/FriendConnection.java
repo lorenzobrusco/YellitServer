@@ -9,24 +9,31 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class FriendConnection extends AbstractDBManager{
+import tools.BaseUrl;
+
+public class FriendConnection extends AbstractDBManager {
 
 	public FriendConnection() {
 		super();
 	}
 
+	/**
+	 * Return all user's friends
+	 * 
+	 * @param email
+	 * @return jsonarry
+	 */
 	public JSONArray getFriends(final String email) {
 		final JSONArray arrayFriends = new JSONArray();
-		final String query = "select * from yellit.friends where user_email = ?;";
+		final String query = "select * from " + BaseUrl.DB + "friends where user_email = ?;";
 		try {
 			final Connection mConnection = createConnection();
-			final PreparedStatement mPreparedStatement = mConnection
-					.prepareStatement(query);
+			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
 			mPreparedStatement.setString(1, email);
 			final ResultSet mResultSet = mPreparedStatement.executeQuery();
 			while (mResultSet.next()) {
 				final JSONObject friend = new JSONObject();
-				friend.put("friend",mResultSet.getString("user_email1"));
+				friend.put("friend", mResultSet.getString("user_email1"));
 				arrayFriends.put(friend);
 			}
 			closeConnection();
@@ -35,10 +42,7 @@ public class FriendConnection extends AbstractDBManager{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return arrayFriends;	
+		return arrayFriends;
 	}
-	
-
-	
 
 }

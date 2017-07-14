@@ -8,22 +8,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tools.BaseUrl;
+
 public class PostConnection extends AbstractDBManager {
 
 	public PostConnection() {
 		super();
 	}
 
+	/**
+	 * Return all posts
+	 * @param data useless for now
+	 * @return
+	 */
 	public JSONArray getAllPost(final String data) {
-
 		final JSONArray postsList = new JSONArray();
 		final String query = "select * from post;";
-
 		try {
 
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
-
 			final ResultSet mResultSet = mPreparedStatement.executeQuery();
 			while (mResultSet.next()) {
 
@@ -37,7 +41,6 @@ public class PostConnection extends AbstractDBManager {
 				post.put("comment", mResultSet.getString("text"));
 				post.put("post_video", "null");
 				post.put("likes", "null");		
-
 				postsList.put(post);
 			}
 
@@ -81,9 +84,17 @@ public class PostConnection extends AbstractDBManager {
 		return postsList;
 	}
 
-	// final String query = "INSERT INTO `yellit`.`post` (`data`, `title`,
-	// `subtitle`, `type`, `text`, `location`) VALUES (?, ?, ?, ?, ?, ?,
-	// ?);";
+	/**
+	 * Create a new post
+	 * @param type
+	 * @param position location
+	 * @param image path
+	 * @param userEmail
+	 * @param text comment
+	 * @param lat latitude
+	 * @param longi longitude
+	 * @return true if post is created
+	 */
 	public boolean createPost(final String type, final String position, final String image, final String userEmail,
 			final String text, final String lat, final String longi) {
 
@@ -112,9 +123,14 @@ public class PostConnection extends AbstractDBManager {
 		} 		
 	}
 
+	/**
+	 * Delete post
+	 * @param id
+	 * @return
+	 */
 	public JSONObject deletePost(final int id) {
 		final JSONObject deletePost = new JSONObject();
-		final String query = "delete from yellit.post where idPost = ?;";
+		final String query = "delete from " + BaseUrl.DB + "post where idPost = ?;";
 		try {
 			final Connection mConnection = createConnection();
 			final PreparedStatement mPreparedStatement = mConnection.prepareStatement(query);
@@ -129,6 +145,11 @@ public class PostConnection extends AbstractDBManager {
 		return deletePost;
 	}
 
+	/**
+	 * Get all Post that user published
+	 * @param email
+	 * @return
+	 */
 	public JSONArray getPersonalPost(final String email) {
 		final JSONArray posts = new JSONArray();
 		final String query = "select count(*), type from post where user_email = ? group by type ;";

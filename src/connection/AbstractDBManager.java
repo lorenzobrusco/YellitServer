@@ -40,6 +40,9 @@ public abstract class AbstractDBManager {
 		}
 	}
 
+	/**
+	 * Load each properties from file
+	 */
 	protected static void loadDBProperties() {
 		final Properties properties = getPropertiesQuietly();
 		final String dbDriver = properties.getProperty("db.driver");
@@ -49,10 +52,15 @@ public abstract class AbstractDBManager {
 		loadDriver(dbDriver);
 	}
 
+	
 	protected java.sql.Date convertJavaDateToSqlDate(final java.util.Date date) {
 		return new java.sql.Date(date.getTime());
 	}
 
+	/**
+	 * Start connection
+	 * @return connection
+	 */
 	protected Connection createConnection() {
 		try {
 			return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -61,6 +69,9 @@ public abstract class AbstractDBManager {
 		}
 	}
 
+	/**
+	 * Close connection
+	 */
 	protected void closeConnection() {
 		try {
 			DriverManager.getConnection(dbUrl, dbUsername, dbPassword).close();

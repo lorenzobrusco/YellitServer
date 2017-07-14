@@ -45,16 +45,16 @@ public class Posts extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		String mode = request.getParameter("mode");
 
-		if(mode != null)
-		{			
-			if(mode.equals("getAll"))
-			{			
+		if (mode != null) {
+			if (mode.equals("getAll")) {
 				System.out.println("Getting all posts");
 				JSONArray posts = new PostConnection().getAllPost("");
 				if (posts == null) {
@@ -63,78 +63,74 @@ public class Posts extends HttpServlet {
 					response.getWriter().append(posts.toString());
 				}
 
-			}
-			else if(mode.equals("adding"))
-			{
-				System.out.println("Adding");			
-			}
-			else
-			{			
-				System.out.println("Other actions");			
+			} else if (mode.equals("adding")) {
+				JSONObject create = this.createPost(request);
+				response.getWriter().append(create.toString());
+			} else {
+				System.out.println("Other actions");
 			}
 		}
-		else
-		{
-			final JSONObject serviceManager = new JSONObject();
-
-			try {				
-				String comment = request.getParameter("comment");
-				String place = request.getParameter("place");
-				String category = request.getParameter("category");
-				String email = request.getParameter("email");
-				String lat = request.getParameter("lat");
-				String longi = request.getParameter("longi");
-				
-				Part filePart = request.getPart("file");
-				String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-				InputStream fileContent = filePart.getInputStream();
-
-				serviceManager.put("message","Sto per creare");
-				
-				BufferedImage bi = ImageIO.read(fileContent);
-				String filePath = "/var/lib/tomcat8/webapps/YellitServer/Images/" + fileName;
-				String databasePath = "http://159.203.128.152:8080/YellitServer/Images/" + fileName;
-				
-				File outputfile = new File(filePath);
-				ImageIO.write(bi, "png", outputfile);
-
-				boolean messageCreated = new PostConnection().createPost(category, place, databasePath, email, comment, lat, longi);
-				
-				serviceManager.put("success", messageCreated);
-				if(messageCreated)
-				{
-					serviceManager.put("message","creazione OK");
-				}
-				else
-				{					
-					serviceManager.put("message","creazione FALLITA");
-				}
-
-			} catch (IOException e) {
-	
-				e.printStackTrace();
-				
-			} catch (JSONException e) {
-
-				e.printStackTrace();
-				
-			} finally {
-				
-				response.getWriter().append(serviceManager.toString());
-
-			}
-
-		}
-
 
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
+	}
+
+	private JSONObject createPost(HttpServletRequest request) {
+		final JSONObject serviceManager = new JSONObject();
+
+		try {
+			String comment = request.getParameter("comment");
+			String place = request.getParameter("place");
+			String category = request.getParameter("category");
+			String email = request.getParameter("email");
+			String lat = request.getParameter("lat");
+			String longi = request.getParameter("longi");
+
+			Part filePart = request.getPart("file");
+			String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+			InputStream fileContent = filePart.getInputStream();
+			System.out.println(request.getRequestURI().toString() + "&" + email + "&" + comment + "&" + place + "&"
+					+ category + "&" + lat + "&" + longi + "&" + fileName);
+			serviceManager.put("message", "Sto per creare");
+
+			BufferedImage bi = ImageIO.read(fileContent);
+			String filePath = "/var/lib/tomcat8/webapps/YellitServer/Images/" + fileName;
+			String databasePath = "http://159.203.128.152:8080/YellitServer/Images/" + fileName;
+
+			File outputfile = new File(filePath);
+			ImageIO.write(bi, "png", outputfile);
+
+			boolean messageCreated = new PostConnection().createPost(category, place, databasePath, email, comment, lat,
+					longi);
+
+			serviceManager.put("success", messageCreated);
+			if (messageCreated) {
+				serviceManager.put("message", "creazione OK");
+			} else {
+				serviceManager.put("message", "creazione FALLITA");
+			}
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		} catch (JSONException e) {
+
+			e.printStackTrace();
+
+		} finally {
+
+			return serviceManager;
+
+		}
 	}
 
 }
