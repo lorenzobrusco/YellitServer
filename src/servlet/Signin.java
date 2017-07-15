@@ -42,7 +42,25 @@ public class Signin extends HttpServlet {
 		String nickname = request.getParameter("nickname");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		System.out.println(request.getRequestURI().toString() + "&" + nickname + "&" + email + "&"+ password );
+		String file = request.getParameter("file");
+		JSONObject profile = new UserConnection().createProfile(email, nickname, password, file);
+		if (profile == null) {
+			response.getWriter().append("");
+		} else {
+			response.getWriter().append(profile.toString());
+		}
+		
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String nickname = request.getParameter("nickname");
+		String email = request.getParameter("email");
+		String password = request.getParameter("password");
+		String path = "http://159.203.128.152:8080/YellitServer/Images/"+ email +".png";
 		/** create image and add here*/
 		Part filePart = request.getPart("file");
 		InputStream fileContent = filePart.getInputStream();
@@ -56,14 +74,6 @@ public class Signin extends HttpServlet {
 		} else {
 			response.getWriter().append(profile.toString());
 		}
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
 	}
 
 }
